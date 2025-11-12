@@ -437,14 +437,14 @@ public class CircularUnsortedDoublyLinkedListTest {
     contentNormal = list.listContent(); 
     contentReverse = list.listContentReverse(); 
     assertEquals("-> 555 -> 999 -> 101 -> 100 -> 20 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
-    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 100 -> 101 -> 999 ->", contentReverse);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 100 -> 101 -> 999 -> 555 ->", contentReverse);
 
     list.remove(20);
 
     contentNormal = list.listContent(); 
     contentReverse = list.listContentReverse(); 
     assertEquals("-> 555 -> 999 -> 101 -> 100 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
-    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 100 -> 101 -> 999 ->", contentReverse);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 100 -> 101 -> 999 -> 555 ->", contentReverse);
 
     Integer foundFirst = list.find(555);
     Integer foundLast = list.find(10);
