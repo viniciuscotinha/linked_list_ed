@@ -184,44 +184,32 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
 
   @Override
   public T getNextElement() {
-    if (this.first == null || this.last == null) {
-      return null;
+    if (this.first == null) {
+        return null;
     }
 
     if (this.navigationPointer == null) {
-      this.navigationPointer = this.first;
-      T value = this.navigationPointer.getValue();
-      this.navigationPointer.setNext(this.navigationPointer.getNext());
-      this.navigationPointer.setPrevious(this.navigationPointer.getPrevious());
-      return value;
+        this.navigationPointer = this.first;
+    } else {
+        this.navigationPointer = this.navigationPointer.getNext();
     }
 
-    this.navigationPointer = this.navigationPointer.getNext();
-    this.navigationPointer.setNext(this.navigationPointer.getNext());
-    this.navigationPointer.setPrevious(this.navigationPointer.getPrevious());
-    T value = this.navigationPointer.getValue();
-    return value;
-  }
+    return this.navigationPointer.getValue();
+}
 
-  @Override
-  public T getPreviousElement() {
-    if (this.first == null || this.last == null) {
-      return null;
+@Override
+  public T getPreviousElement() { 
+    if (this.first == null) {
+        return null;
     }
 
     if (this.navigationPointer == null) {
-      this.navigationPointer = this.first;
-      T value = this.navigationPointer.getValue();
-      this.navigationPointer.setNext(this.navigationPointer.getNext());
-      this.navigationPointer.setPrevious(this.navigationPointer.getPrevious());
-      return value;
+        this.navigationPointer = this.last;
+    } else {
+        this.navigationPointer = this.navigationPointer.getPrevious();
     }
 
-    this.navigationPointer = this.navigationPointer.getPrevious();
-    this.navigationPointer.setNext(this.navigationPointer.getNext());
-    this.navigationPointer.setPrevious(this.navigationPointer.getPrevious());
-    T value = this.navigationPointer.getValue();
-    return value;
+    return this.navigationPointer.getValue();
   }
 
   

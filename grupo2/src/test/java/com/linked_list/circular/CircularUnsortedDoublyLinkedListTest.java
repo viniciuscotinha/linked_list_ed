@@ -241,13 +241,13 @@ public class CircularUnsortedDoublyLinkedListTest {
       list.clearNavigation();
 
       element = list.getPreviousElement();
-      assertEquals(2, element);
-
-      element = list.getPreviousElement();
       assertEquals(8, element);
 
+      element = list.getPreviousElement();
+      assertEquals(5, element);
+
       element = list.getNextElement();
-      assertEquals(2, element);
+      assertEquals(8, element);
     }
 
   }
@@ -329,9 +329,6 @@ public class CircularUnsortedDoublyLinkedListTest {
     list.append(elements);
 
     Integer e = list.getPreviousElement();
-    assertEquals(10, e);
-
-    e = list.getPreviousElement();
     assertEquals(30, e);
 
     e = list.getPreviousElement();
@@ -339,6 +336,9 @@ public class CircularUnsortedDoublyLinkedListTest {
 
     e = list.getPreviousElement();
     assertEquals(10, e);
+
+    e = list.getPreviousElement();
+    assertEquals(30, e);
   }
 
   @Test
@@ -467,6 +467,308 @@ public class CircularUnsortedDoublyLinkedListTest {
     contentReverse = list.listContentReverse(); 
     assertEquals("-> 77 -> 999 -> 101 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 -> 88 ->", contentNormal);
     assertEquals("-> 88 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 101 -> 999 -> 77 ->", contentReverse);
+  }
+
+  @Test
+  @DisplayName("remover todos os elementos um por um")
+  public void removerTodosElementosUmPorUm() {
+    Integer[] elements = new Integer[] { 5, 10, 15, 20, 25 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    assertTrue(list.remove(5));
+    assertEquals("-> 10 -> 15 -> 20 -> 25 ->", list.listContent());
+
+    assertTrue(list.remove(25));
+    assertEquals("-> 10 -> 15 -> 20 ->", list.listContent());
+
+    assertTrue(list.remove(15));
+    assertEquals("-> 10 -> 20 ->", list.listContent());
+
+    assertTrue(list.remove(10));
+    assertEquals("-> 20 ->", list.listContent());
+
+    assertTrue(list.remove(20));
+    assertEquals("null", list.listContent());
+
+    assertFalse(list.remove(999));
+  }
+
+  @Test
+  @DisplayName("navegar apos remocoes sucessivas")
+  public void navegarAposRemocoesSucessivas() {
+    Integer[] elements = new Integer[] { 1, 2, 3, 4, 5 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    Integer first = list.getNextElement();
+    assertEquals(1, first);
+
+    list.remove(1);
+
+    list.clearNavigation();
+    Integer newFirst = list.getNextElement();
+    assertEquals(2, newFirst);
+
+    list.remove(5);
+    list.clearNavigation();
+
+    Integer second = list.getNextElement();
+    assertEquals(2, second);
+
+    Integer third = list.getNextElement();
+    assertEquals(3, third);
+
+    Integer fourth = list.getNextElement();
+    assertEquals(4, fourth);
+
+    Integer fifth = list.getNextElement();
+    assertEquals(2, fifth);
+  }
+
+  @Test
+  @DisplayName("alternancia entre prepend e append com remocoes")
+  public void alternanciaPreprependAppendComRemocoes() {
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(100);
+    list.prepend(50);
+    list.append(150);
+    list.prepend(25);
+    list.append(200);
+
+    assertEquals("-> 25 -> 50 -> 100 -> 150 -> 200 ->", list.listContent());
+    assertEquals("-> 200 -> 150 -> 100 -> 50 -> 25 ->", list.listContentReverse());
+
+    list.remove(100);
+    assertEquals("-> 25 -> 50 -> 150 -> 200 ->", list.listContent());
+
+    list.prepend(10);
+    list.append(300);
+    assertEquals("-> 10 -> 25 -> 50 -> 150 -> 200 -> 300 ->", list.listContent());
+
+    list.remove(50);
+    list.remove(200);
+    assertEquals("-> 10 -> 25 -> 150 -> 300 ->", list.listContent());
+    assertEquals("-> 300 -> 150 -> 25 -> 10 ->", list.listContentReverse());
+  }
+
+  @Test
+  @DisplayName("encontrar elementos apos multiplas operacoes")
+  public void encontrarElementosAposMultiplasOperacoes() {
+    Integer[] elements = new Integer[] { 11, 22, 33, 44, 55, 66, 77, 88 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    assertEquals(11, list.find(11));
+    assertEquals(88, list.find(88));
+    assertEquals(44, list.find(44));
+    assertNull(list.find(999));
+
+    list.remove(44);
+    assertNull(list.find(44));
+
+    list.prepend(9);
+    assertEquals(9, list.find(9));
+
+    list.append(99);
+    assertEquals(99, list.find(99));
+
+    list.remove(11);
+    assertNull(list.find(11));
+  }
+
+  @Test
+  @DisplayName("navegacao forward e backward alternada")
+  public void navegacaoForwardEBackwardAlternada() {
+    Integer[] elements = new Integer[] { 10, 20, 30, 40, 50 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    Integer e1 = list.getNextElement();
+    assertEquals(10, e1);
+
+    Integer e2 = list.getNextElement();
+    assertEquals(20, e2);
+
+    Integer e3 = list.getPreviousElement();
+    assertEquals(10, e3);
+
+    Integer e4 = list.getNextElement();
+    assertEquals(20, e4);
+
+    Integer e5 = list.getNextElement();
+    assertEquals(30, e5);
+
+    Integer e6 = list.getPreviousElement();
+    assertEquals(20, e6);
+
+    Integer e7 = list.getPreviousElement();
+    assertEquals(10, e7);
+
+    Integer e8 = list.getPreviousElement();
+    assertEquals(50, e8);
+  }
+
+  @Test
+  @DisplayName("inserir elementos duplicados e validar integridade")
+  public void inserirElementosDuplicados() {
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(5);
+    list.append(5);
+    list.append(5);
+
+    assertEquals("-> 5 -> 5 -> 5 ->", list.listContent());
+    assertEquals("-> 5 -> 5 -> 5 ->", list.listContentReverse());
+
+    assertTrue(list.remove(5));
+    assertEquals("-> 5 -> 5 ->", list.listContent());
+
+    assertTrue(list.remove(5));
+    assertEquals("-> 5 ->", list.listContent());
+
+    assertTrue(list.remove(5));
+    assertEquals("null", list.listContent());
+  }
+
+  @Test
+  @DisplayName("operacoes apos limpar navegacao")
+  public void operacoesAposLimparNavegacao() {
+    Integer[] elements = new Integer[] { 7, 14, 21, 28 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    Integer e1 = list.getNextElement();
+    assertEquals(7, e1);
+
+    Integer e2 = list.getNextElement();
+    assertEquals(14, e2);
+
+    list.clearNavigation();
+
+    Integer e3 = list.getNextElement();
+    assertEquals(7, e3);
+
+    list.clearNavigation();
+
+    Integer e4 = list.getPreviousElement();
+    assertEquals(28, e4);
+
+    list.clearNavigation();
+
+    Integer e5 = list.getNextElement();
+    assertEquals(7, e5);
+
+    list.remove(7);
+    list.clearNavigation();
+
+    Integer e6 = list.getNextElement();
+    assertEquals(14, e6);
+  }
+
+  @Test
+  @DisplayName("remover primeiro elemento apos navegar")
+  public void removerPrimeiroElementoAposNavegar() {
+    Integer[] elements = new Integer[] { 1, 2, 3, 4, 5 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    Integer e1 = list.getNextElement();
+    assertEquals(1, e1);
+
+    Integer e2 = list.getNextElement();
+    assertEquals(2, e2);
+
+    assertTrue(list.remove(1));
+    
+    list.clearNavigation();
+    Integer e3 = list.getNextElement();
+    assertEquals(2, e3);
+
+    Integer e4 = list.getNextElement();
+    assertEquals(3, e4);
+  }
+
+  @Test
+  @DisplayName("remover ultimo elemento apos navegar")
+  public void removerUltimoElementoAposNavegar() {
+    Integer[] elements = new Integer[] { 1, 2, 3, 4, 5 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    list.getNextElement();
+    list.getNextElement();
+    list.getNextElement();
+    list.getNextElement();
+
+    Integer e5 = list.getNextElement();
+    assertEquals(5, e5);
+
+    assertTrue(list.remove(5));
+
+    list.clearNavigation();
+    Integer e1 = list.getNextElement();
+    assertEquals(1, e1);
+
+    Integer e4 = list.getPreviousElement();
+    assertEquals(4, e4);
+  }
+
+  @Test
+  @DisplayName("validar circularidade apos operacoes")
+  public void validarCircularidadeAposOperacoes() {
+    Integer[] elements = new Integer[] { 10, 20, 30 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    for (int i = 0; i < 10; i++) {
+      Integer e = list.getNextElement();
+      assertTrue(e == 10 || e == 20 || e == 30, "Elemento inválido: " + e);
+    }
+
+    list.remove(20);
+
+    for (int i = 0; i < 8; i++) {
+      Integer e = list.getNextElement();
+      assertTrue(e == 10 || e == 30, "Elemento inválido após remoção: " + e);
+    }
+  }
+
+  @Test
+  @DisplayName("operacoes massivas com muitos elementos")
+  public void operacoesMassivasComMuitosElementos() {
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    Integer[] largeArray = new Integer[100];
+    for (int i = 0; i < 100; i++) {
+      largeArray[i] = i;
+    }
+
+    list.append(largeArray);
+
+    assertEquals(0, list.find(0));
+    assertEquals(99, list.find(99));
+    assertEquals(50, list.find(50));
+
+    assertTrue(list.remove(0));
+    assertTrue(list.remove(99));
+    assertTrue(list.remove(50));
+
+    assertNull(list.find(0));
+    assertNull(list.find(99));
+    assertNull(list.find(50));
+
+    assertEquals(1, list.find(1));
+    assertEquals(98, list.find(98));
   }
 
 }
