@@ -235,6 +235,20 @@ public class CircularUnsortedDoublyLinkedListTest {
 
       element = list.getNextElement();
       assertEquals(2, element);
+
+      element = list.getNextElement();
+      assertEquals(5, element);
+
+      list.clearNavigation();
+
+      element = list.getPreviousElement();
+      assertEquals(2, element);
+
+      element = list.getPreviousElement();
+      assertEquals(8, element);
+
+      element = list.getNextElement();
+      assertEquals(2, element);
     }
 
   }

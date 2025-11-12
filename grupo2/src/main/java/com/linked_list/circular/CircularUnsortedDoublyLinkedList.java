@@ -12,6 +12,7 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
 
   @Override
   public boolean remove(T value) {
+    this.clearNavigation();
     if (this.first == null || this.last == null) {
       return false;
     }
@@ -131,6 +132,7 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
   @Override
   public void append(T value) {
     ListNode<T> newElement = new ListNode<T>(value);
+    this.clearNavigation();
 
     if (first == null) {
       this.first = newElement;
@@ -139,7 +141,6 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
       this.last = newElement;
       this.last.setNext(newElement);
       this.last.setPrevious(newElement);
-      this.navigationPointer = newElement;
     } else {
       newElement.setPrevious(this.last);
       this.last.setNext(newElement);
@@ -152,6 +153,7 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
   @Override
   public void prepend(T value) {
     ListNode<T> newElement = new ListNode<T>(value);
+    this.clearNavigation();
 
     if (first == null) {
       this.first = newElement;
@@ -160,7 +162,6 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
       this.last = newElement;
       this.last.setNext(newElement);
       this.last.setPrevious(newElement);
-      this.navigationPointer = newElement;
     } else {
       this.first.setPrevious(newElement);
       newElement.setNext(this.first);
@@ -172,7 +173,7 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
 
   @Override
   public void clearNavigation() {
-    this.navigationPointer = this.first;
+    this.navigationPointer = null;
   }
 
   @Override
@@ -182,18 +183,39 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
     }
 
     if (this.navigationPointer == null) {
-      return null;
+      this.navigationPointer = this.first;
+      T value = this.navigationPointer.getValue();
+      this.navigationPointer.setNext(this.navigationPointer.getNext());
+      this.navigationPointer.setPrevious(this.navigationPointer.getPrevious());
+      return value;
     }
 
-    T value = this.navigationPointer.getValue();
     this.navigationPointer = this.navigationPointer.getNext();
+    this.navigationPointer.setNext(this.navigationPointer.getNext());
+    this.navigationPointer.setPrevious(this.navigationPointer.getPrevious());
+    T value = this.navigationPointer.getValue();
     return value;
   }
 
   @Override
   public T getPreviousElement() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getPreviousElement'");
+    if (this.first == null || this.last == null) {
+      return null;
+    }
+
+    if (this.navigationPointer == null) {
+      this.navigationPointer = this.first;
+      T value = this.navigationPointer.getValue();
+      this.navigationPointer.setNext(this.navigationPointer.getNext());
+      this.navigationPointer.setPrevious(this.navigationPointer.getPrevious());
+      return value;
+    }
+
+    this.navigationPointer = this.navigationPointer.getPrevious();
+    this.navigationPointer.setNext(this.navigationPointer.getNext());
+    this.navigationPointer.setPrevious(this.navigationPointer.getPrevious());
+    T value = this.navigationPointer.getValue();
+    return value;
   }
 
 }
