@@ -40,19 +40,21 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
       T currentValue = element.getValue();
       
       if (currentValue.equals(value)) {
-        previousNode.setNext(element.getNext());
+        ListNode<T> nextElement = element.getNext();
+        previousNode.setNext(nextElement);
+        nextElement.setPrevious(previousNode);
         element = null;
         return true;
       }
 
       previousNode = element;
       element = element.getNext();
-    } while (element != this.first && element != this.first && element != null);
+    } while (element != this.first && element != this.last && element != null);
     
     if (this.last.getValue().equals(value)) {
       this.last = this.last.getPrevious();
-      this.first.setPrevious(last);
       this.last.setNext(this.first);
+      this.first.setPrevious(last);
       return true;
     }
     
@@ -61,6 +63,10 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
 
   @Override
   public T find(T value) {
+    if (this.first == null && this.last == null) {
+      return null;
+    }
+    
      ListNode<T> element = this.first;
 
     do {
@@ -217,5 +223,7 @@ public class CircularUnsortedDoublyLinkedList<T extends Object> implements IUnso
     T value = this.navigationPointer.getValue();
     return value;
   }
+
+  
 
 }

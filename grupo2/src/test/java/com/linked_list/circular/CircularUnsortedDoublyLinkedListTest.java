@@ -2,10 +2,9 @@ package com.linked_list.circular;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.DisplayName;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.DisplayName;
 
 public class CircularUnsortedDoublyLinkedListTest {
 
@@ -304,6 +303,170 @@ public class CircularUnsortedDoublyLinkedListTest {
 
     }
 
+  }
+
+  @Test
+  @DisplayName("remover elemento em lista de dois elementos")
+  public void removerElementoEmListaDeDoisElementos() {
+    Integer[] elements = new Integer[] { 1, 2 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    boolean removed = list.remove(1);
+    String content = list.listContent();
+
+    assertTrue(removed);
+    assertEquals("-> 2 ->", content);
+  }
+
+  @Test
+  @DisplayName("navegar previous ciclo completo")
+  public void navegarPreviousCicloCompleto() {
+    Integer[] elements = new Integer[] { 10, 20, 30 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    Integer e = list.getPreviousElement();
+    assertEquals(10, e);
+
+    e = list.getPreviousElement();
+    assertEquals(30, e);
+
+    e = list.getPreviousElement();
+    assertEquals(20, e);
+
+    e = list.getPreviousElement();
+    assertEquals(10, e);
+  }
+
+  @Test
+  @DisplayName("navegar em lista vazia retorna null")
+  public void navegarEmListaVaziaRetornaNull() {
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    assertNull(list.getNextElement());
+    assertNull(list.getPreviousElement());
+  }
+
+  @Test
+  @DisplayName("encontrar em lista vazia retorna null")
+  public void encontrarEmListaVaziaRetornaNull() {
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    Integer value = list.find(123);
+    assertNull(value);
+  }
+
+  @Test
+  @DisplayName("manter integridade apos remover elemento intermediario (forward)")
+  public void manterIntegridadeAposRemoverIntermediarioForward() {
+    Integer[] elements = new Integer[] { 1, 2, 3, 4 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(elements);
+
+    boolean removed = list.remove(3);
+    String content = list.listContent();
+    Integer found = list.find(3);
+
+    assertTrue(removed);
+    assertEquals("-> 1 -> 2 -> 4 ->", content);
+    assertNull(found);
+  }
+
+  @Test
+  @DisplayName("inserir usando arrays com prepend e append")
+  public void inserirUsandoArraysComPrependEAppend() {
+    Integer[] toAppend = new Integer[] { 2, 3 };
+    Integer[] toPrepend = new Integer[] { 1, 0 };
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(toAppend);
+    list.prepend(toPrepend);
+
+    String content = list.listContent();
+    assertEquals("-> 0 -> 1 -> 2 -> 3 ->", content);
+  }
+
+  @Test
+  @DisplayName("manipular única lista em várias sequências e validar forward e reverse")
+  public void manipularListaComplexaEValidarSequencias() {
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+
+    list.append(new Integer[] {1,2,3,4,5,6,7,8,9,10});
+
+    String contentNormal = list.listContent(); 
+    String contentReverse = list.listContentReverse(); 
+    assertEquals("-> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 5 -> 4 -> 3 -> 2 -> 1 ->", contentReverse);
+    
+    list.prepend(new Integer[] {11,12,13,14,15,16,17,18,19,20});
+    
+    contentNormal = list.listContent(); 
+    contentReverse = list.listContentReverse(); 
+    assertEquals("-> 20 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 5 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 ->", contentReverse);
+    
+
+    list.prepend(new Integer[] {100,101});
+
+    contentNormal = list.listContent(); 
+    contentReverse = list.listContentReverse(); 
+    assertEquals("-> 101 -> 100 -> 20 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 5 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 100 -> 101 ->", contentReverse);
+    
+    list.prepend(999);
+
+    contentNormal = list.listContent(); 
+    contentReverse = list.listContentReverse(); 
+    assertEquals("-> 999 -> 101 -> 100 -> 20 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 5 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 100 -> 101 -> 999 ->", contentReverse);
+    
+
+    list.remove(5);
+
+    contentNormal = list.listContent(); 
+    contentReverse = list.listContentReverse(); 
+    assertEquals("-> 999 -> 101 -> 100 -> 20 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 100 -> 101 -> 999 ->", contentReverse);
+    
+    list.prepend(555);
+
+    contentNormal = list.listContent(); 
+    contentReverse = list.listContentReverse(); 
+    assertEquals("-> 555 -> 999 -> 101 -> 100 -> 20 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 100 -> 101 -> 999 -> 555 ->", contentReverse);
+
+    list.remove(20);
+
+    contentNormal = list.listContent(); 
+    contentReverse = list.listContentReverse(); 
+    assertEquals("-> 555 -> 999 -> 101 -> 100 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 100 -> 101 -> 999 -> 555 ->", contentReverse);
+
+    Integer foundFirst = list.find(555);
+    Integer foundLast = list.find(10);
+    assertEquals(555, foundFirst);
+    assertEquals(10, foundLast);
+
+    assertTrue(list.remove(10));
+    assertTrue(list.remove(555));
+    assertTrue(list.remove(100));
+
+    contentNormal = list.listContent(); 
+    contentReverse = list.listContentReverse(); 
+    assertEquals("-> 999 -> 101 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 ->", contentNormal);
+    assertEquals("-> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 101 -> 999 ->", contentReverse);
+
+    list.prepend(77);
+    list.append(88);
+
+    contentNormal = list.listContent(); 
+    contentReverse = list.listContentReverse(); 
+    assertEquals("-> 77 -> 999 -> 101 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 -> 88 ->", contentNormal);
+    assertEquals("-> 88 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 101 -> 999 -> 77 ->", contentReverse);
   }
 
 }
