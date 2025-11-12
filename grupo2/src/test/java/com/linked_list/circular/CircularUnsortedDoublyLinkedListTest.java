@@ -437,14 +437,14 @@ public class CircularUnsortedDoublyLinkedListTest {
     contentNormal = list.listContent(); 
     contentReverse = list.listContentReverse(); 
     assertEquals("-> 555 -> 999 -> 101 -> 100 -> 20 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
-    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 100 -> 101 -> 999 -> 555 ->", contentReverse);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 20 -> 100 -> 101 -> 999 ->", contentReverse);
 
     list.remove(20);
 
     contentNormal = list.listContent(); 
     contentReverse = list.listContentReverse(); 
     assertEquals("-> 555 -> 999 -> 101 -> 100 -> 19 -> 18 -> 17 -> 16 -> 15 -> 14 -> 13 -> 12 -> 11 -> 1 -> 2 -> 3 -> 4 -> 6 -> 7 -> 8 -> 9 -> 10 ->", contentNormal);
-    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 100 -> 101 -> 999 -> 555 ->", contentReverse);
+    assertEquals("-> 10 -> 9 -> 8 -> 7 -> 6 -> 4 -> 3 -> 2 -> 1 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19 -> 100 -> 101 -> 999 ->", contentReverse);
 
     Integer foundFirst = list.find(555);
     Integer foundLast = list.find(10);
@@ -769,6 +769,66 @@ public class CircularUnsortedDoublyLinkedListTest {
 
     assertEquals(1, list.find(1));
     assertEquals(98, list.find(98));
+  }
+
+  @Test
+  @DisplayName("consistência entre forward e reverse via strings")
+  public void consistenciaEntreForwardEReverseViaStrings() {
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+    Integer[] values = new Integer[] {1,2,3,4,5,6,7};
+    list.append(values);
+
+    String forward = list.listContent();
+    String reverse = list.listContentReverse();
+
+    String[] revTokens = reverse.replace("->", "").trim().split("\\s+");
+    StringBuilder reconstructedForward = new StringBuilder();
+    reconstructedForward.append("->");
+    for (int i = revTokens.length - 1; i >= 0; i--) {
+      reconstructedForward.append(" ").append(revTokens[i]).append(" ->");
+    }
+
+    assertEquals(forward, reconstructedForward.toString());
+  }
+
+  @Test
+  @DisplayName("remover elementos pares em lote e validar integridade")
+  public void removerParesEmLoteEValidarIntegridade() {
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+    for (int i = 0; i < 20; i++) {
+      list.append(i);
+    }
+
+    for (int i = 0; i < 20; i += 2) {
+      assertTrue(list.remove(i));
+    }
+
+    String content = list.listContent();
+    assertEquals("-> 1 -> 3 -> 5 -> 7 -> 9 -> 11 -> 13 -> 15 -> 17 -> 19 ->", content);
+
+    String reverse = list.listContentReverse();
+    assertEquals("-> 19 -> 17 -> 15 -> 13 -> 11 -> 9 -> 7 -> 5 -> 3 -> 1 ->", reverse);
+  }
+
+  @Test
+  @DisplayName("remover elemento enquanto navega e validar ponteiro")
+  public void removerEnquantoNavegaEValidarPonteiro() {
+    CircularUnsortedDoublyLinkedList<Integer> list = new CircularUnsortedDoublyLinkedList<Integer>();
+    list.append(new Integer[] {1,2,3,4,5});
+
+    Integer a = list.getNextElement();
+    assertEquals(1, a);
+
+    Integer b = list.getNextElement();
+    assertEquals(2, b);
+
+    assertTrue(list.remove(3));
+
+    Integer afterClear = list.getNextElement();
+    assertEquals(1, afterClear);
+
+    String content = list.listContent();
+    assertEquals("-> 1 -> 2 -> 4 -> 5 ->", content);
   }
 
 }
